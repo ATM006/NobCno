@@ -1,2 +1,2 @@
 # NobCno
-New observation cloud notes
+New observation of cloud notes
