@@ -16,7 +16,7 @@ class server
         int epfd;
 	public:	
 		int MySend(int iSock,char *pchBuf,size_t tLen);
-		int MyRecv(int iSock,char *pchBuf,size_t tCount);
+		int MyRecv(int iSock,char *&pchBuf,size_t tCount);
     public:
         server(int port = 6501);
         ~server();

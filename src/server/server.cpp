@@ -50,9 +50,11 @@ void server::running()
                         }
                         else if(events[i].events && EPOLLIN)
                         {   
-                            char buf[1024] = {0};
+                            char *buf = new char[1024];
+							//memset(buf,0,sizeof(buf));
                             //char buf[100] = {0};
-                            int len = MyRecv(tmpfd,buf,sizeof(buf));
+                            int len = MyRecv(tmpfd,buf,1024);
+							//int len = recv(tmpfd,buf,1024,0);
 							if(len<0)
 							{
 								std::cout<<"    <"<<__FILE__<<":"<<__LINE__<<"> "<<"MyRecv failed!"<<std::endl;
@@ -61,10 +63,12 @@ void server::running()
 							{
 								return ;
 							}
-							int read_size = (int)ntohl(*(int*)buf);
-							std::cout<<"    <"<<__FILE__<<":"<<__LINE__<<"> "<<"int read_szie ="<<len<<std::endl;
+							//int read_size = (int)ntohl(*(int*)buf);
+							std::cout<<"    <"<<__FILE__<<":"<<__LINE__<<"> "<<"int read_szie ="<<len<<"buf = :"<<buf<<std::endl;
 							Article art;
-							art.un_package(buf,len);					
+							int op = -1;
+							art.un_package(buf,len,op);	
+							//std::cout<<"op="<<op;				
 							//len = MyRecv(tmpfd,buf,len);
 							//{
 							//	std::cout<<"    <"<<__FILE__<<":"<<__LINE__<<"> "<<"MyRecv failed!"<<std::endl;
@@ -152,6 +156,9 @@ server::~server()
 
 int server::MySend(int iSock,char *pchBuf,size_t tLen)
 {
+//	int n;
+//	n = send(iSock,pchBuf,tLen,0);
+//	return n;
 	int iThisSend;
 	unsigned int iSended = 0;
 	if(0 == tLen)
@@ -167,15 +174,23 @@ int server::MySend(int iSock,char *pchBuf,size_t tLen)
 		pchBuf += iThisSend;
 	}
 	return tLen;
+
 }
 
-int server::MyRecv( int iSock, char * pchBuf, size_t tCount){
-        size_t tBytesRead=0;
+int server::MyRecv( int iSock,char *&pchBuf, size_t tCount){
+	int n ;
+	n = recv(iSock,pchBuf,tCount,0);	
+	return n;
+	//return tCount;
+/*       size_t tBytesRead=0;
         int iThisRead;
         while(tBytesRead < tCount){
 
                do{
                      iThisRead = read(iSock, pchBuf+tBytesRead, tCount-tBytesRead);
+					 if(iThisRead==0)
+						break;
+					 //std::cout<<pchBuf;
               } while((iThisRead< 0) && (errno==EINTR));
                if(iThisRead < 0){
                       return iThisRead;
@@ -185,4 +200,5 @@ int server::MyRecv( int iSock, char * pchBuf, size_t tCount){
               tBytesRead += iThisRead;
               pchBuf += iThisRead;
        }
+*/
 }
