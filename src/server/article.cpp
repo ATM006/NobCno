@@ -1,5 +1,6 @@
 #include "article.h"
 #include <cstring>
+#include <iostream>
 
 Article::Article():m_id(-1)
 {
@@ -12,6 +13,8 @@ Article::Article():m_id(-1)
 	m_content = NULL;
 	m_dateline = 0;
 }
+
+
 
 Article::~Article()
 {
@@ -29,3 +32,7 @@ void Article::modify_article(){}
 void Article::download_article(){}
 void Article::search_article(){}
 
+void Article::un_package(char* buf,int len)
+{
+	std::cout<<"un_package()"<<std::endl;
+}

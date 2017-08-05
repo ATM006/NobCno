@@ -15,7 +15,7 @@ public:
 	void modify_article();
 	void download_article();
 	void search_article();
-	
+	void un_package(char* buf,int len);	
 		
 //private:
 public:

@@ -10,18 +10,17 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <cstring>
-
- #include <stdlib.h>
+#include <stdlib.h>
 
 int server::m_count = 0;
-
+/*
 int setnonblocking( int fd )
 {
     int old_option = fcntl( fd, F_GETFL );
     int new_option = old_option | O_NONBLOCK;
     fcntl( fd, F_SETFL, new_option );
     return old_option;
-}
+}*/
 
 void server::running()
 {
@@ -41,7 +40,7 @@ void server::running()
                             struct sockaddr_in clientaddr;
                             socklen_t c_len = sizeof(clientaddr); 
                             int cfd = accept(tmpfd,(struct sockaddr*)&clientaddr,&c_len);
-							setnonblocking(cfd);
+							//setnonblocking(cfd);
                             struct epoll_event event;
                             event.events = EPOLLIN;
                             event.data.fd = cfd;
@@ -51,21 +50,31 @@ void server::running()
                         }
                         else if(events[i].events && EPOLLIN)
                         {   
-                            //char buf[1024] = {0};
-                            char buf[100] = {0};
+                            char buf[1024] = {0};
+                            //char buf[100] = {0};
                             int len = MyRecv(tmpfd,buf,sizeof(buf));
 							if(len<0)
 							{
 								std::cout<<"    <"<<__FILE__<<":"<<__LINE__<<"> "<<"MyRecv failed!"<<std::endl;
+							
+							}else if(len==0)
+							{
+								return ;
 							}
 							int read_size = (int)ntohl(*(int*)buf);
 							std::cout<<"    <"<<__FILE__<<":"<<__LINE__<<"> "<<"int read_szie ="<<len<<std::endl;
-							len = MyRecv(tmpfd,buf,read_size);
-							{
-								std::cout<<"    <"<<__FILE__<<":"<<__LINE__<<"> "<<"MyRecv failed!"<<std::endl;
-							}
-
-							//std::cout<<strlen(buf)<<" "<<buf<<std::endl; 
+							Article art;
+							art.un_package(buf,len);					
+							//len = MyRecv(tmpfd,buf,len);
+							//{
+							//	std::cout<<"    <"<<__FILE__<<":"<<__LINE__<<"> "<<"MyRecv failed!"<<std::endl;
+							//}
+							//buf[len]='\0';
+							//std::cout<<buf<<std::endl; 
+						
+							/*
+							for(int i=0;i<len;i++)
+								 std::cout<<buf[i];*/
 							//memset(buf,0,sizeof(buf));                          
 									
 
