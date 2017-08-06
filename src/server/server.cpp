@@ -1,5 +1,6 @@
 #include "server.h"
 #include "article.h"
+#include "../log/log.h"
 #include <iostream>
 #include <string>
 #include <sys/types.h>
@@ -65,10 +66,27 @@ void server::running()
 							}
 							//int read_size = (int)ntohl(*(int*)buf);
 							std::cout<<"    <"<<__FILE__<<":"<<__LINE__<<"> "<<"int read_szie ="<<len<<"buf = :"<<buf<<std::endl;
+							
 							Article art;
 							int op = -1;
-							art.un_package(buf,len,op);	
-							//std::cout<<"op="<<op;				
+							art.un_package(buf,len,op);
+							log("un_packaged");	
+							/*响应用户操作:op*/	
+
+							switch(op)
+							{
+								case ADD:
+									art.add_article();
+									break;	
+								case DEL:
+									break;
+								case MOD:
+									break;
+								case SEA:
+									break;
+								default:
+									break;
+							}
 							//len = MyRecv(tmpfd,buf,len);
 							//{
 							//	std::cout<<"    <"<<__FILE__<<":"<<__LINE__<<"> "<<"MyRecv failed!"<<std::endl;

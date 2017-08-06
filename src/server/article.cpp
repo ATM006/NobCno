@@ -1,9 +1,11 @@
 #include "article.h"
+#include "../log/log.h"
+#include "db.h"
 #include <cstring>
 #include <iostream>
 
 
-
+extern void insert(Article *art);
 
 Article::Article():m_id(-1)
 {
@@ -29,7 +31,11 @@ Article::~Article()
 	m_dateline = -1;
 }
 
-void Article::add_article(){}
+void Article::add_article()
+{
+	log("add_article()");
+	insert(this);	
+}
 void Article::del_article(){}
 void Article::modify_article(){}
 void Article::download_article(){}
@@ -37,9 +43,7 @@ void Article::search_article(){}
 
 void Article::mk_package(char* &pBuff,int &iLen,char* &tmp,int op)
 {
-	
-	//strcpy(pBuff,"XXXXXXXXXX");
-	//iLen = 10;
+	log("mk_package()");
 	*(int*)(pBuff+iLen)= htonl(op);
     iLen+=sizeof(int);
 	std::cout<<"op = "<<op<<std::endl;
@@ -67,8 +71,8 @@ void Article::mk_package(char* &pBuff,int &iLen,char* &tmp,int op)
 void Article::un_package(char* buf,int iLen,int &op)
 {
 
-//std::cout<<buf;
-	//std::cout<<"un_package()"<<std::endl;
+
+	log("un_package()");
 	int len = 0;
 	memcpy(&op,buf+len,sizeof(int));	//1
 	len += sizeof(int);
